@@ -6,7 +6,7 @@ pmysql.createPool({
     connectionLimit: 3,
     host: 'localhost',
     user: 'root',
-    password: 'root', 
+    password: 'root',
     database: 'proj2024mysql' 
 })
 .then((p) => {
@@ -28,4 +28,17 @@ var getStudents = function () {
     });
 };
 
-module.exports = { getStudents };
+//get students sorted by sid
+var getAllStudents = function () {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT * FROM student ORDER BY sid ASC')
+        .then((data) => {
+            resolve(data);
+        })
+        .catch((error) => {
+            reject(error);
+        });
+    });
+};
+
+module.exports = { getStudents, getAllStudents };

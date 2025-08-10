@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Students</title>
+</head>
+<body>
+    <h1>Students</h1>
+
+    <a href="/students/add">Add Student</a><br>
+    <a href="/">Home</a><br><br>
+
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Action</th>
+        </tr>
+        <% students.forEach(function(student) { %>
+            <tr>
+                <td><%= student.sid %></td>
+                <td><%= student.name %></td>
+                <td><%= student.age %></td>
+                <td><a href="/students/edit/<%= student.sid %>">Update</a></td>
+            </tr>
+        <% }); %>
+    </table>
+</body>
+</html>
