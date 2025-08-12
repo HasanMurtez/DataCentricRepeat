@@ -1,5 +1,4 @@
 var pmysql = require('promise-mysql');
-
 var pool;
 
 pmysql.createPool({
@@ -7,38 +6,25 @@ pmysql.createPool({
     host: 'localhost',
     user: 'root',
     password: 'root',
-    database: 'proj2024mysql' 
+    database: 'proj2024mysql'
 })
-.then((p) => {
-    pool = p;
-})
-.catch((e) => {
-    console.log("pool error: " + e);
-});
+.then((p) => { pool = p; })
+.catch((e) => { console.log("pool error: " + e); });
 
-var getStudents = function () {
-    return new Promise((resolve, reject) => {
-        pool.query('SELECT * FROM student')
-        .then((data) => {
-            resolve(data);
-        })
-        .catch((error) => {
-            reject(error);
-        });
-    });
-};
+// list all students sorted by sid
+function getAllStudents () {
+    return pool.query('SELECT * FROM student ORDER BY sid ASC');
+}
 
-//get students sorted by sid
-var getAllStudents = function () {
-    return new Promise((resolve, reject) => {
-        pool.query('SELECT * FROM student ORDER BY sid ASC')
-        .then((data) => {
-            resolve(data);
-        })
-        .catch((error) => {
-            reject(error);
-        });
-    });
-};
+// one student by id
+function getStudentById (sid) {
+    return pool.query('SELECT * FROM student WHERE sid = ?', [sid])
+        .then(rows => rows[0] || null);
+}
 
-module.exports = { getStudents, getAllStudents };
+// update student by id
+function updateStudent (sid, name, age) {
+    return pool.query('UPDATE student SET name = ?, age = ? WHERE sid = ?', [name, age, sid]);
+}
+
+module.exports = { getAllStudents, getStudentById, updateStudent };
