@@ -1,4 +1,5 @@
 var pmysql = require('promise-mysql');
+
 var pool;
 
 pmysql.createPool({
@@ -27,4 +28,9 @@ function updateStudent (sid, name, age) {
     return pool.query('UPDATE student SET name = ?, age = ? WHERE sid = ?', [name, age, sid]);
 }
 
-module.exports = { getAllStudents, getStudentById, updateStudent };
+// addd student
+function addStudent (sid, name, age) {
+    return pool.query('INSERT INTO student (sid, name, age) VALUES (?, ?, ?)', [sid, name, age]);
+}
+
+module.exports = { getAllStudents, getStudentById, updateStudent, addStudent };
