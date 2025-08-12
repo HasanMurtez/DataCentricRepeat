@@ -1,9 +1,9 @@
 var express = require('express');
 var mysqlDAO = require('./mySqlDao');
 var app = express();
+
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
-
 
 app.listen(3004, () => {
     console.log("Running on port 3004");
@@ -14,13 +14,12 @@ app.get("/", (req, res) => {
     res.render("home");
 });
 
-
+// students page
 app.get("/students", (req, res) => {
     mysqlDAO.getAllStudents()
         .then((data) => res.render("students", { students: data }))
         .catch((error) => res.send(error));
 });
-
 
 // update page
 app.get("/students/edit/:sid", (req, res) => {
@@ -55,8 +54,7 @@ app.post("/students/edit/:sid", (req, res) => {
         .catch((err) => res.send(err));
 });
 
-
-//add page
+// add page
 app.get("/students/add", (req, res) => {
     res.render("student_add", {
         errors: [],
@@ -64,7 +62,7 @@ app.get("/students/add", (req, res) => {
     });
 });
 
-//add student
+// add student
 app.post("/students/add", async (req, res) => {
     const { sid, name, age } = req.body;
 
@@ -80,8 +78,9 @@ app.post("/students/add", async (req, res) => {
             student: { sid, name, age }
         });
     }
+
     try {
-        //duplicate check
+        // duplicate check
         const existing = await mysqlDAO.getStudentById(sid.trim());
         if (existing) {
             return res.render("student_add", {
@@ -95,4 +94,11 @@ app.post("/students/add", async (req, res) => {
     } catch (err) {
         res.send(err);
     }
+});
+
+// grades page
+app.get("/grades", (req, res) => {
+    mysqlDAO.getGradesReport()
+        .then((rows) => res.render("grades", { rows }))
+        .catch((err) => res.send(err));
 });

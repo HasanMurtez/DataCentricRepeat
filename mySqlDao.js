@@ -28,9 +28,22 @@ function updateStudent (sid, name, age) {
     return pool.query('UPDATE student SET name = ?, age = ? WHERE sid = ?', [name, age, sid]);
 }
 
-// addd student
+// add student
 function addStudent (sid, name, age) {
     return pool.query('INSERT INTO student (sid, name, age) VALUES (?, ?, ?)', [sid, name, age]);
 }
 
-module.exports = { getAllStudents, getStudentById, updateStudent, addStudent };
+// get grades report
+
+function getGradesReport () {
+  // used left join so students with no modules still show. 
+    return pool.query(`
+        SELECT s.name AS studentName, m.name AS moduleName, g.grade
+        FROM student s
+        LEFT JOIN grade g ON s.sid = g.sid 
+        LEFT JOIN module m ON g.mid = m.mid
+        ORDER BY s.name ASC, g.grade ASC
+    `);
+}
+
+module.exports = { getAllStudents, getStudentById, updateStudent, addStudent, getGradesReport };

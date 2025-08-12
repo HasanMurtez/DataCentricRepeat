@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Grades</title>
+</head>
+<body>
+    <a href="/">Home</a>
+    <h1>Grades</h1>
+
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>Student</th>
+            <th>Module</th>
+            <th>Grade</th>
+        </tr>
+        <% rows.forEach(function(r){ %>
+            <tr>
+                <td><%= r.studentName %></td>
+                <td><%= r.moduleName ? r.moduleName : '' %></td>
+                <td><%= (r.grade !== null && r.grade !== undefined) ? r.grade : '' %></td>
+            </tr>
+        <% }); %>
+    </table>
+</body>
+</html>
