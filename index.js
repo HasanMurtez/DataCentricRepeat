@@ -1,5 +1,6 @@
 var express = require('express');
 var mysqlDAO = require('./mySqlDao');
+var mongoDAO = require('./mongoDao'); 
 var app = express();
 
 app.set('view engine', 'ejs');
@@ -78,7 +79,6 @@ app.post("/students/add", async (req, res) => {
             student: { sid, name, age }
         });
     }
-
     try {
         // duplicate check
         const existing = await mysqlDAO.getStudentById(sid.trim());
@@ -100,5 +100,12 @@ app.post("/students/add", async (req, res) => {
 app.get("/grades", (req, res) => {
     mysqlDAO.getGradesReport()
         .then((rows) => res.render("grades", { rows }))
+        .catch((err) => res.send(err));
+});
+
+// lecturers page
+app.get("/lecturers", (req, res) => {
+    mongoDAO.getAllLecturers()
+        .then((lects) => res.render("lecturers", { lecturers: lects }))
         .catch((err) => res.send(err));
 });
