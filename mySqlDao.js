@@ -33,8 +33,8 @@ function addStudent (sid, name, age) {
     return pool.query('INSERT INTO student (sid, name, age) VALUES (?, ?, ?)', [sid, name, age]);
 }
 
-// get grades report
 
+// get grades report
 function getGradesReport () {
   // used left join so students with no modules still show. 
     return pool.query(`
@@ -46,4 +46,17 @@ function getGradesReport () {
     `);
 }
 
-module.exports = { getAllStudents, getStudentById, updateStudent, addStudent, getGradesReport };
+// count modules taught by a lecturer for delete check
+function countModulesByLecturer(lid) {
+    return pool.query('SELECT COUNT(*) AS cnt FROM module WHERE lecturer = ?', [lid])
+        .then(rows => rows[0].cnt);
+}
+
+module.exports = {
+    getAllStudents,
+    getStudentById,
+    updateStudent,
+    addStudent,
+    getGradesReport,
+    countModulesByLecturer
+};

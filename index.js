@@ -80,7 +80,6 @@ app.post("/students/add", async (req, res) => {
         });
     }
     try {
-        // duplicate check
         const existing = await mysqlDAO.getStudentById(sid.trim());
         if (existing) {
             return res.render("student_add", {
@@ -88,7 +87,6 @@ app.post("/students/add", async (req, res) => {
                 student: { sid, name, age }
             });
         }
-
         await mysqlDAO.addStudent(sid.trim(), name.trim(), ageNum);
         res.redirect("/students");
     } catch (err) {
@@ -103,9 +101,30 @@ app.get("/grades", (req, res) => {
         .catch((err) => res.send(err));
 });
 
-// lecturers page
+// lecturers
 app.get("/lecturers", (req, res) => {
     mongoDAO.getAllLecturers()
         .then((lects) => res.render("lecturers", { lecturers: lects }))
         .catch((err) => res.send(err));
+});
+
+// lecturers delete
+app.get("/lecturers/delete/:lid", async (req, res) => {
+    const lid = req.params.lid;
+    try {
+        if (await mysqlDAO.countModulesByLecturer(lid) > 0) {
+            return res.render("lecturers_error", {
+                message: `Cannot delete lecturer ${lid}. He/She has associated modules`
+            });
+        }
+        
+        const deleted = await mongoDAO.deleteLecturer(lid);
+        return deleted === 1
+            ? res.redirect("/lecturers")
+            : res.render("lecturers_error", { message: `Lecturer ${lid} not found in MongoDB` });
+            
+    } catch (err) {
+        console.error(err);
+        res.render("lecturers_error", { message: `Error deleting ${lid}: ${err.message}` });
+    }
 });
